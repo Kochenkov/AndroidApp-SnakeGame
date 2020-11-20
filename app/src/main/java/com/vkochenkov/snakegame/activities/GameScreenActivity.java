@@ -12,6 +12,7 @@ import android.widget.LinearLayout.LayoutParams;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.vkochenkov.snakegame.Direction;
 import com.vkochenkov.snakegame.views.GameScreenView;
 import com.vkochenkov.snakegame.R;
 
@@ -36,9 +37,10 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private int startY;
 
     private List<Rect> snake = new ArrayList<>();
-    private int gameScreenSize;
 
+    private int gameScreenSize;
     private int phoneScreenWidth;
+    private Direction direction;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,28 +88,53 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private void findDisplaySize() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        //phoneScreenHeight = metrics.heightPixels;
         phoneScreenWidth = metrics.widthPixels;
     }
 
     @Override
     public void onClick(View view) {
-        Rect first = snake.get(0);
         switch (view.getId()) {
             case (R.id.btn_right):
-                snake.add(0, new Rect(first.left + rectSize, first.top, first.right + rectSize, first.bottom));
+                if (direction!=Direction.LEFT) {
+                    direction = Direction.RIGHT;
+                }
                 break;
             case (R.id.btn_left):
-                snake.add(0, new Rect(first.left - rectSize, first.top, first.right - rectSize, first.bottom));
+                if (direction!=Direction.RIGHT) {
+                    direction = Direction.LEFT;
+                }
                 break;
             case (R.id.btn_up):
-                snake.add(0, new Rect(first.left, first.top  - rectSize, first.right, first.bottom - rectSize));
+                if (direction!=Direction.DOWN) {
+                    direction = Direction.UP;
+                }
                 break;
             case (R.id.btn_down):
+                if (direction!=Direction.UP) {
+                    direction = Direction.DOWN;
+                }
+                break;
+        }
+
+        Rect first = snake.get(0);
+
+        switch (direction) {
+            case RIGHT:
+                snake.add(0, new Rect(first.left + rectSize, first.top, first.right + rectSize, first.bottom));
+                break;
+            case LEFT:
+                snake.add(0, new Rect(first.left - rectSize, first.top, first.right - rectSize, first.bottom));
+                break;
+            case UP:
+                snake.add(0, new Rect(first.left, first.top  - rectSize, first.right, first.bottom - rectSize));
+                break;
+            case DOWN:
                 snake.add(0, new Rect(first.left, first.top  + rectSize , first.right, first.bottom + rectSize));
                 break;
         }
+
         snake.remove(snake.size() - 1);
+
         gameScreenView.setSnake(snake);
         gameScreenView.invalidate();
     }
