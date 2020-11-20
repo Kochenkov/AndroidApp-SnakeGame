@@ -12,6 +12,8 @@ import java.util.List;
 public class GameScreenView extends View {
 
     private List<Rect> snake;
+    //todo добавить генерацию еды в рандомном месте
+    private Rect food;
     private int multiple;
     private int rectSize;
     private int viewSize;

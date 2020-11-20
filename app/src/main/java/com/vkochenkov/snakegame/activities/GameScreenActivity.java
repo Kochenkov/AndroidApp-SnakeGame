@@ -12,9 +12,9 @@ import android.widget.LinearLayout.LayoutParams;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.vkochenkov.snakegame.R;
 import com.vkochenkov.snakegame.enums.Direction;
 import com.vkochenkov.snakegame.views.GameScreenView;
-import com.vkochenkov.snakegame.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,20 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private List<Rect> snake = new ArrayList<>();
     private Direction direction = Direction.RIGHT;
 
+    class SnakeMoving extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    this.sleep(timeToDraw);
+                    moveSnakeInDirection();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,32 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
         SnakeMoving snakeMoving = new SnakeMoving();
         snakeMoving.start();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case (R.id.btn_right):
+                if (direction != Direction.LEFT) {
+                    direction = Direction.RIGHT;
+                }
+                break;
+            case (R.id.btn_left):
+                if (direction != Direction.RIGHT) {
+                    direction = Direction.LEFT;
+                }
+                break;
+            case (R.id.btn_up):
+                if (direction != Direction.DOWN) {
+                    direction = Direction.UP;
+                }
+                break;
+            case (R.id.btn_down):
+                if (direction != Direction.UP) {
+                    direction = Direction.DOWN;
+                }
+                break;
+        }
     }
 
     private void createAndShowGameScreenView() {
@@ -93,46 +133,6 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         phoneScreenWidth = metrics.widthPixels;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case (R.id.btn_right):
-                if (direction!=Direction.LEFT) {
-                    direction = Direction.RIGHT;
-                }
-                break;
-            case (R.id.btn_left):
-                if (direction!=Direction.RIGHT) {
-                    direction = Direction.LEFT;
-                }
-                break;
-            case (R.id.btn_up):
-                if (direction!=Direction.DOWN) {
-                    direction = Direction.UP;
-                }
-                break;
-            case (R.id.btn_down):
-                if (direction!=Direction.UP) {
-                    direction = Direction.DOWN;
-                }
-                break;
-        }
-    }
-
-    class SnakeMoving extends Thread {
-        @Override
-        public void run() {
-            while(true) {
-                try {
-                    this.sleep(timeToDraw);
-                    moveSnakeInDirection();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     private void moveSnakeInDirection() {
         Rect first = snake.get(0);
         switch (direction) {
@@ -143,14 +143,23 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                 snake.add(0, new Rect(first.left - rectSize, first.top, first.right - rectSize, first.bottom));
                 break;
             case UP:
-                snake.add(0, new Rect(first.left, first.top  - rectSize, first.right, first.bottom - rectSize));
+                snake.add(0, new Rect(first.left, first.top - rectSize, first.right, first.bottom - rectSize));
                 break;
             case DOWN:
-                snake.add(0, new Rect(first.left, first.top  + rectSize , first.right, first.bottom + rectSize));
+                snake.add(0, new Rect(first.left, first.top + rectSize, first.right, first.bottom + rectSize));
                 break;
         }
         snake.remove(snake.size() - 1);
         gameScreenView.setSnake(snake);
-        gameScreenView.invalidate();
+
+        //todo добавить проверку на выход за пределы поля
+
+        //запускаем обновление UI в главном потоке, что бы работало на старых телефонах
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                gameScreenView.invalidate();
+            }
+        });
     }
 }
