@@ -1,4 +1,4 @@
-package com.vkochenkov.snakegame;
+package com.vkochenkov.snakegame.enums;
 
 public enum Direction {
     UP,

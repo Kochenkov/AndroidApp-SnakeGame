@@ -12,14 +12,13 @@ import android.widget.LinearLayout.LayoutParams;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vkochenkov.snakegame.Direction;
+import com.vkochenkov.snakegame.enums.Direction;
 import com.vkochenkov.snakegame.views.GameScreenView;
 import com.vkochenkov.snakegame.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//todo придумать как перемещать змейку по таймеру
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
     //views
@@ -30,17 +29,15 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private Button btnUpMove;
     private Button btnDownMove;
 
-    //snake data
-    private int multiple = 15;
+    private int multiple = 20;
+    private int timeToDraw = 500;
     private int rectSize;
     private int startX;
     private int startY;
-
-    private List<Rect> snake = new ArrayList<>();
-
     private int gameScreenSize;
     private int phoneScreenWidth;
-    private Direction direction;
+    private List<Rect> snake = new ArrayList<>();
+    private Direction direction = Direction.RIGHT;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,15 +58,20 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         initGameScreenParams();
         initSnakeArray();
         createAndShowGameScreenView();
+
+        SnakeMoving snakeMoving = new SnakeMoving();
+        snakeMoving.start();
     }
 
     private void createAndShowGameScreenView() {
         gameScreenView = new GameScreenView(this, snake, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.topMargin = rectSize;
+        params.bottomMargin = rectSize;
         gameScreenView.setLayoutParams(params);
         linearLayout = findViewById(R.id.game_screen_layout);
-        linearLayout.addView(gameScreenView);
+        linearLayout.addView(gameScreenView, 0);
     }
 
     private void initSnakeArray() {
@@ -115,9 +117,24 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                 }
                 break;
         }
+    }
 
+    class SnakeMoving extends Thread {
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    this.sleep(timeToDraw);
+                    moveSnakeInDirection();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void moveSnakeInDirection() {
         Rect first = snake.get(0);
-
         switch (direction) {
             case RIGHT:
                 snake.add(0, new Rect(first.left + rectSize, first.top, first.right + rectSize, first.bottom));
@@ -132,9 +149,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                 snake.add(0, new Rect(first.left, first.top  + rectSize , first.right, first.bottom + rectSize));
                 break;
         }
-
         snake.remove(snake.size() - 1);
-
         gameScreenView.setSnake(snake);
         gameScreenView.invalidate();
     }
