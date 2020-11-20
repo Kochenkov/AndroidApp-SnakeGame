@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,8 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private Button btnDownMove;
 
     private int multiple = 20;
-    private int timeToDraw = 500;
+    private int timeToDraw = 250;
+    private boolean snakeIsAlive = true;
     private int rectSize;
     private int startX;
     private int startY;
@@ -42,13 +44,23 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     class SnakeMoving extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (snakeIsAlive) {
                 try {
                     this.sleep(timeToDraw);
                     moveSnakeInDirection();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            //показываем в случае смерти
+            if (!snakeIsAlive) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(GameScreenActivity.this, "you are dead!", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
             }
         }
     }
@@ -73,6 +85,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         initSnakeArray();
         createAndShowGameScreenView();
 
+        //запускаем движение змеи в бэкграунде
         SnakeMoving snakeMoving = new SnakeMoving();
         snakeMoving.start();
     }
@@ -134,32 +147,41 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void moveSnakeInDirection() {
-        Rect first = snake.get(0);
+        Rect head = snake.get(0);
         switch (direction) {
             case RIGHT:
-                snake.add(0, new Rect(first.left + rectSize, first.top, first.right + rectSize, first.bottom));
+                snake.add(0, new Rect(head.left + rectSize, head.top, head.right + rectSize, head.bottom));
                 break;
             case LEFT:
-                snake.add(0, new Rect(first.left - rectSize, first.top, first.right - rectSize, first.bottom));
+                snake.add(0, new Rect(head.left - rectSize, head.top, head.right - rectSize, head.bottom));
                 break;
             case UP:
-                snake.add(0, new Rect(first.left, first.top - rectSize, first.right, first.bottom - rectSize));
+                snake.add(0, new Rect(head.left, head.top - rectSize, head.right, head.bottom - rectSize));
                 break;
             case DOWN:
-                snake.add(0, new Rect(first.left, first.top + rectSize, first.right, first.bottom + rectSize));
+                snake.add(0, new Rect(head.left, head.top + rectSize, head.right, head.bottom + rectSize));
                 break;
         }
         snake.remove(snake.size() - 1);
+        borderClashValidation(head);
         gameScreenView.setSnake(snake);
 
-        //todo добавить проверку на выход за пределы поля
-
-        //запускаем обновление UI в главном потоке, что бы работало на старых телефонах
+        //запускаем обновление UI в главном потоке, чтобы не было ошибок
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 gameScreenView.invalidate();
             }
         });
+    }
+
+    private void borderClashValidation(Rect head) {
+        if (head.left < 0 ||
+            head.top < 0 ||
+            head.right > gameScreenSize ||
+            head.bottom > gameScreenSize
+        ) {
+            snakeIsAlive = false;
+        }
     }
 }
