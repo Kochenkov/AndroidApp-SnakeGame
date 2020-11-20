@@ -1,4 +1,4 @@
-package com.vkochenkov.snakegame;
+package com.vkochenkov.snakegame.activities;
 
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,9 +12,13 @@ import android.widget.LinearLayout.LayoutParams;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.vkochenkov.snakegame.views.GameScreenView;
+import com.vkochenkov.snakegame.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
+//todo придумать как перемещать змейку по таймеру
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
     //views
@@ -30,7 +34,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private int rectSize;
     private int startX;
     private int startY;
-    private int boardSize = 1;
+
     private List<Rect> snake = new ArrayList<>();
     private int gameScreenSize;
 
@@ -58,7 +62,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void createAndShowGameScreenView() {
-        gameScreenView = new GameScreenView(this, snake, rectSize, boardSize, multiple);
+        gameScreenView = new GameScreenView(this, snake, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         gameScreenView.setLayoutParams(params);
@@ -68,15 +72,15 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     private void initSnakeArray() {
         for (int i = 0; i < 3; i++) {
-            snake.add(new Rect(startX - ((rectSize + boardSize) * i), startY, (startX + rectSize) - ((rectSize + boardSize) * i), (startY + rectSize)));
+            snake.add(new Rect(startX - (rectSize * i), startY, (startX + rectSize) - (rectSize * i), (startY + rectSize)));
         }
     }
 
     private void initGameScreenParams() {
         rectSize = phoneScreenWidth / multiple;
-        gameScreenSize = boardSize + (rectSize + boardSize) * (multiple - 1);
-        startX = boardSize + (rectSize + boardSize) * (multiple / 2);
-        startY = boardSize + (rectSize + boardSize) * (multiple / 2);
+        gameScreenSize = rectSize * (multiple - 2);
+        startX = rectSize * (multiple / 2);
+        startY = rectSize * (multiple / 2);
     }
 
     private void findDisplaySize() {
@@ -91,16 +95,16 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         Rect first = snake.get(0);
         switch (view.getId()) {
             case (R.id.btn_right):
-                snake.add(0, new Rect(first.left + rectSize + boardSize, first.top, first.right + rectSize + boardSize, first.bottom));
+                snake.add(0, new Rect(first.left + rectSize, first.top, first.right + rectSize, first.bottom));
                 break;
             case (R.id.btn_left):
-                snake.add(0, new Rect(first.left - rectSize - boardSize, first.top, first.right - rectSize - boardSize, first.bottom));
+                snake.add(0, new Rect(first.left - rectSize, first.top, first.right - rectSize, first.bottom));
                 break;
             case (R.id.btn_up):
-                snake.add(0, new Rect(first.left, first.top  - rectSize - boardSize, first.right, first.bottom - rectSize - boardSize));
+                snake.add(0, new Rect(first.left, first.top  - rectSize, first.right, first.bottom - rectSize));
                 break;
             case (R.id.btn_down):
-                snake.add(0, new Rect(first.left, first.top  + rectSize + boardSize, first.right, first.bottom + rectSize + boardSize));
+                snake.add(0, new Rect(first.left, first.top  + rectSize , first.right, first.bottom + rectSize));
                 break;
         }
         snake.remove(snake.size() - 1);
@@ -108,4 +112,3 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         gameScreenView.invalidate();
     }
 }
-
