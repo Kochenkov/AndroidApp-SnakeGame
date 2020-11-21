@@ -3,6 +3,7 @@ package com.vkochenkov.snakegame.activities;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -22,45 +23,39 @@ import java.util.List;
 
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //views
     private GameScreenView gameScreenView;
-    private LinearLayout linearLayout;
+    private LinearLayout mainLinearLayout;
     private Button btnRightMove;
     private Button btnLeftMove;
     private Button btnUpMove;
     private Button btnDownMove;
 
     private int multiple = 20;
-    private int timeToDraw = 250;
+    private int timeToRefreshDraw = 250;
     private boolean snakeIsAlive = true;
+    private Direction direction = Direction.RIGHT;
     private int rectSize;
     private int startX;
     private int startY;
     private int gameScreenSize;
     private int phoneScreenWidth;
-    private List<Rect> snake = new ArrayList<>();
-    private Direction direction = Direction.RIGHT;
 
-    class SnakeMoving extends Thread {
+    private List<Rect> snake = new ArrayList<>();
+    private Rect food;
+
+    private SnakeMoving snakeMoving;
+
+    //todo попробовать переписать на асинк таск, ибо не получается останавливать процесс при сворачивании или выходе из активити
+    private class SnakeMoving extends Thread {
         @Override
         public void run() {
             while (snakeIsAlive) {
                 try {
-                    this.sleep(timeToDraw);
+                    this.sleep(timeToRefreshDraw);
                     moveSnakeInDirection();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("haha");
                 }
-            }
-            //показываем в случае смерти
-            if (!snakeIsAlive) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast toast = Toast.makeText(GameScreenActivity.this, "you are dead!", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                });
             }
         }
     }
@@ -83,10 +78,11 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         findDisplaySize();
         initGameScreenParams();
         initSnakeArray();
-        createAndShowGameScreenView();
+        food = generateNewFood();
+        createAndInitGameScreenView();
 
         //запускаем движение змеи в бэкграунде
-        SnakeMoving snakeMoving = new SnakeMoving();
+        snakeMoving = new SnakeMoving();
         snakeMoving.start();
     }
 
@@ -116,15 +112,15 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void createAndShowGameScreenView() {
-        gameScreenView = new GameScreenView(this, snake, rectSize, multiple);
+    private void createAndInitGameScreenView() {
+        gameScreenView = new GameScreenView(this, snake, food, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.topMargin = rectSize;
         params.bottomMargin = rectSize;
         gameScreenView.setLayoutParams(params);
-        linearLayout = findViewById(R.id.game_screen_layout);
-        linearLayout.addView(gameScreenView, 0);
+        mainLinearLayout = findViewById(R.id.game_screen_layout);
+        mainLinearLayout.addView(gameScreenView, 0);
     }
 
     private void initSnakeArray() {
@@ -146,6 +142,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         phoneScreenWidth = metrics.widthPixels;
     }
 
+    //todo пофиксить баг с быстрым нажатием "вниз и в бок"
     private void moveSnakeInDirection() {
         Rect head = snake.get(0);
         switch (direction) {
@@ -162,11 +159,13 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                 snake.add(0, new Rect(head.left, head.top + rectSize, head.right, head.bottom + rectSize));
                 break;
         }
-        snake.remove(snake.size() - 1);
-        borderClashValidation(head);
-        gameScreenView.setSnake(snake);
 
-        //запускаем обновление UI в главном потоке, чтобы не было ошибок
+        head = snake.get(0);
+
+        borderClashValidation(head);
+        foodClashValidation(head);
+
+        gameScreenView.setSnake(snake);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -175,13 +174,42 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    private void foodClashValidation(Rect head) {
+        if (head.left == food.left &&
+                head.top == food.top &&
+                head.right == food.right &&
+                head.bottom == food.bottom
+        ) {
+            Log.d("food", "food has been eaten");
+            food = generateNewFood();
+            gameScreenView.setFood(food);
+        } else {
+            snake.remove(snake.size() - 1);
+        }
+    }
+
+    private Rect generateNewFood() {
+        //todo сделать так, что бы еда не появлялась внутри змеи
+        int randomX = (int) ((Math.random()*gameScreenSize)/rectSize)*rectSize;
+        int randomY = (int) ((Math.random()*gameScreenSize)/rectSize)*rectSize;
+        return new Rect(randomX, randomY, randomX+rectSize, randomY+rectSize);
+    }
+
     private void borderClashValidation(Rect head) {
         if (head.left < 0 ||
             head.top < 0 ||
             head.right > gameScreenSize ||
             head.bottom > gameScreenSize
         ) {
+            //todo написать валидацию столкновения со своим телом
             snakeIsAlive = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(GameScreenActivity.this, "you are dead!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
         }
     }
 }
