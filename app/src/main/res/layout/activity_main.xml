@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:background="@drawable/main_gradient_background">
+    android:background="@drawable/main_gradient_background"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
 
-    <Button
-        android:id="@+id/btn_play"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:text="Snake Game" />
 
-<!--    настройки-->
-<!--    об игре-->
-<!--    выход-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play" />
+
+        <Button
+            android:id="@+id/btn_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Options" />
+
+        <Button
+            android:id="@+id/btn_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="About" />
+
+        <Button
+            android:id="@+id/btn_exit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exit" />
+
+
+        <!--    настройки-->
+        <!--    об игре-->
+        <!--    выход-->
+
+    </LinearLayout>
+
 
 </LinearLayout>

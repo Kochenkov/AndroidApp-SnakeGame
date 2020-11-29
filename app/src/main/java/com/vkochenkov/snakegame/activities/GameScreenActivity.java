@@ -199,10 +199,27 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvScore.setText(Integer.toString(score));
+                tvScore.setText(scoreToString(score));
                 gameScreenView.invalidate();
             }
         });
+    }
+
+    private String scoreToString(int score) {
+        final int initialScore = score;
+        //0000
+        final int initialSize = 4;
+        int size = 1;
+        while (score/10>0) {
+           score = score/10;
+           size++;
+        }
+        String strScore = "";
+        for (int i=0; i<(initialSize-size); i++) {
+            strScore  += "0";
+        }
+        strScore += initialScore;
+        return strScore;
     }
 
     private Rect generateNewFood() {
