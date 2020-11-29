@@ -57,7 +57,9 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
             while (gameIsRunning) {
                 try {
                     this.sleep(timeToRefreshDraw);
-                    moveSnakeInDirection();
+                    if (gameIsRunning) {
+                        moveSnakeInDirection();
+                    }
                 } catch (InterruptedException e) {
                     System.out.println(e.getCause());
                 }
@@ -97,16 +99,20 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         gameIsRunning = false;
     }
 
-    //todo сделать сохранение игры после перезахода
-//    @Override
-//    protected void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!gameIsRunning) {
+            gameIsRunning = true;
+            snakeMoving = new SnakeMoving();
+            snakeMoving.start();
+        }
+    }
 
     @Override
     public void onClick(View view) {

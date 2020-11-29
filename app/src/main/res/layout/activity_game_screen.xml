@@ -3,7 +3,8 @@
     android:id="@+id/game_screen_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/main_gradient_background">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,7 +33,7 @@
             android:id="@+id/btn_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="left" />
 
@@ -49,6 +50,12 @@
                 android:text="up" />
 
             <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="stop" />
+
+            <Button
                 android:id="@+id/btn_down"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,7 +66,7 @@
             android:id="@+id/btn_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="right" />
 
