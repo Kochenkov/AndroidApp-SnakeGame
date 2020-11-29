@@ -13,7 +13,7 @@ public class GameScreenView extends View {
 
     private static final int SNAKE_COLOR = Color.GREEN;
     private static final int FOOD_COLOR = Color.RED;
-    private static final int BOARD_COLOR = Color.GRAY;
+    private static final int BOARD_COLOR = Color.DKGRAY;
 
     private List<Rect> snake;
     private Rect food;

@@ -3,6 +3,7 @@ package com.vkochenkov.snakegame.activities;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -23,8 +24,8 @@ import java.util.List;
 
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int multiple = 20;
-    private static final int timeToRefreshDraw = 400;
+    private static final int multiple = 7;
+    private static final int timeToRefreshDraw = 500;
 
     private GameScreenView gameScreenView;
     private LinearLayout mainLinearLayout;
@@ -144,8 +145,8 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         gameScreenView = new GameScreenView(this, snake, food, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.topMargin = rectSize;
-        params.bottomMargin = rectSize;
+        params.topMargin = rectSize/2;
+        params.bottomMargin = rectSize/2;
         gameScreenView.setLayoutParams(params);
         mainLinearLayout = findViewById(R.id.game_screen_layout);
         mainLinearLayout.addView(gameScreenView, 1);
@@ -205,10 +206,27 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     private Rect generateNewFood() {
-        //todo сделать так, что бы еда не появлялась внутри змеи
-        int randomX = (int) ((Math.random() * gameScreenSize) / rectSize) * rectSize;
-        int randomY = (int) ((Math.random() * gameScreenSize) / rectSize) * rectSize;
-        return new Rect(randomX, randomY, randomX + rectSize, randomY + rectSize);
+        int randomX = generateRandomCoordinate();
+        int randomY = generateRandomCoordinate();
+
+        Rect food = new Rect(randomX, randomY, randomX + rectSize, randomY + rectSize);
+
+        //проверка на то, что бы еда не появлялась внутри змеи с последующим рекурсивным вызовом ф-ции
+        for (int i = 0; i < snake.size(); i++) {
+            Rect snakeElem = snake.get(i);
+            if (food.left == snakeElem.left && food.top == snakeElem.top) {
+                food = generateNewFood();
+                Log.d("generateNewFood", "RECURSION!!!");
+                break;
+            }
+            Log.d("generateNewFood", "no recursion");
+        }
+
+        return food;
+    }
+
+    private int generateRandomCoordinate() {
+        return (int) ((Math.random() * gameScreenSize) / rectSize) * rectSize;
     }
 
     private void eatFoodOrDeleteTailElement(Rect head) {

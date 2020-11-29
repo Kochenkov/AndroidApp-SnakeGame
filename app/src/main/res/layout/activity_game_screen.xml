@@ -3,8 +3,8 @@
     android:id="@+id/game_screen_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/main_gradient_background">
+    android:background="@drawable/main_gradient_background"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,9 +17,9 @@
             android:text="score: " />
 
         <TextView
+            android:id="@+id/tv_score"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_score"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
@@ -31,8 +31,8 @@
 
         <Button
             android:id="@+id/btn_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="left" />
@@ -41,31 +41,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/btn_up"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_gravity="center_horizontal"
                 android:text="up" />
 
             <Button
-            android:id="@+id/btn_stop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="stop" />
-
-            <Button
                 android:id="@+id/btn_down"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_gravity="center_horizontal"
                 android:text="down" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btn_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="right" />
