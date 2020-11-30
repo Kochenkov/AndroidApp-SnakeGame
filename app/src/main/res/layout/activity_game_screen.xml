@@ -10,20 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_margin="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="score: " />
+            android:text="score: "
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tv_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0000"/>
+            android:text="0000"
+            android:textSize="20sp"/>
 
         <View
             android:layout_width="1dp"
@@ -33,61 +33,74 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="best: " />
+            android:text="best: "
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tv_best"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0000" />
+            android:text="0000"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/game_background_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@android:color/background_dark">
+    </LinearLayout>
 
+<!--    заглушка, что бы прижать к нижу кнопки-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"/>
 
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_margin="20dp">
 
         <Button
             android:id="@+id/btn_left"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
             android:text="left" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/btn_up"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:text="up" />
 
             <Button
                 android:id="@+id/btn_down"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:text="down" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btn_right"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
             android:text="right" />
 
 

@@ -1,5 +1,6 @@
 package com.vkochenkov.snakegame.activities;
 
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -24,29 +25,29 @@ import java.util.List;
 
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int multiple = 7;
+    private static final int multiple = 10;
     private static final int timeToRefreshDraw = 500;
+    private static final String BEST_SCORE = "BEST_SCORE";
+
+    private SharedPreferences preferences;
 
     private GameScreenView gameScreenView;
-    private LinearLayout mainLinearLayout;
-    private TextView tvScore;
+    private LinearLayout gameBackgroundLayout;
+    private TextView tvScore, tvBest;
 
-    private Button btnRightMove;
-    private Button btnLeftMove;
-    private Button btnUpMove;
-    private Button btnDownMove;
+    private Button btnRightMove, btnLeftMove, btnUpMove, btnDownMove;
 
     private Direction direction;
 
     private boolean gameIsRunning;
 
     private int rectSize;
-    private int startX;
-    private int startY;
+    private int startX, startY;
     private int gameScreenSize;
     private int phoneScreenWidth;
 
     private int score;
+    private int bestScore;
     private List<Rect> snake = new LinkedList<>();
     private Rect food;
 
@@ -78,6 +79,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         btnUpMove = findViewById(R.id.btn_up);
         btnDownMove = findViewById(R.id.btn_down);
         tvScore = findViewById(R.id.tv_score);
+        tvBest = findViewById(R.id.tv_best);
 
         btnRightMove.setOnClickListener(this);
         btnLeftMove.setOnClickListener(this);
@@ -94,6 +96,12 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         score = snake.size();
         direction = Direction.RIGHT;
         gameIsRunning = true;
+
+        //достаем рекордный результат из преференций
+        preferences = getPreferences(MODE_PRIVATE);
+        bestScore = preferences.getInt(BEST_SCORE, score);
+        tvBest.setText(scoreToString(bestScore));
+
         //запускаем движение змеи в отдельном потоке
         snakeMoving = new SnakeMoving();
         snakeMoving.start();
@@ -145,11 +153,10 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         gameScreenView = new GameScreenView(this, snake, food, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.topMargin = rectSize/2;
-        params.bottomMargin = rectSize/2;
+        params.setMargins(rectSize/10, rectSize/10, rectSize/10, rectSize/10);
         gameScreenView.setLayoutParams(params);
-        mainLinearLayout = findViewById(R.id.game_screen_layout);
-        mainLinearLayout.addView(gameScreenView, 1);
+        gameBackgroundLayout = findViewById(R.id.game_background_layout);
+        gameBackgroundLayout.addView(gameScreenView, 0);
     }
 
     private List<Rect> generateSnakeArray() {
@@ -277,6 +284,11 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     private void endGame() {
         gameIsRunning = false;
+        if (score>bestScore) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt(BEST_SCORE, score);
+            editor.apply();
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

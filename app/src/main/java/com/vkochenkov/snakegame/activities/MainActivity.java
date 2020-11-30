@@ -12,16 +12,29 @@ import com.vkochenkov.snakegame.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button btnPlay;
+    private Button btnOptions;
+    private Button btnAbout;
+    private Button btnExit;
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnPlay = findViewById(R.id.btn_play);
+        btnPlay = findViewById(R.id.btn_play);
+        btnExit = findViewById(R.id.btn_exit);
+
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, GameScreenActivity.class);
                 startActivity(intent);
+            }
+        });
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }
