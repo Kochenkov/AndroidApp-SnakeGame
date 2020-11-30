@@ -1,5 +1,6 @@
 package com.vkochenkov.snakegame.activities;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -11,9 +12,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.vkochenkov.snakegame.R;
@@ -25,21 +26,23 @@ import java.util.List;
 
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String BEST_SCORE = "BEST_SCORE";
+    private static final String LOSE_TITLE = "Вы проиграли";
+    private static final String WIN_TITLE = "Вы прошли игру!";
+
+    private static final int initialSnakeSize = 3;
     private static final int multiple = 10;
     private static final int timeToRefreshDraw = 500;
-    private static final String BEST_SCORE = "BEST_SCORE";
 
     private SharedPreferences preferences;
-
     private GameScreenView gameScreenView;
     private LinearLayout gameBackgroundLayout;
     private TextView tvScore, tvBest;
-
     private Button btnRightMove, btnLeftMove, btnUpMove, btnDownMove;
-
     private Direction direction;
 
     private boolean gameIsRunning;
+    private boolean snakeIsAlive;
 
     private int rectSize;
     private int startX, startY;
@@ -48,6 +51,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     private int score;
     private int bestScore;
+
     private List<Rect> snake = new LinkedList<>();
     private Rect food;
 
@@ -59,8 +63,8 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
             while (gameIsRunning) {
                 try {
                     this.sleep(timeToRefreshDraw);
-                    if (gameIsRunning) {
-                        moveSnakeInDirection();
+                    if (gameIsRunning && snakeIsAlive) {
+                        moveAndValidateSnake();
                     }
                 } catch (InterruptedException e) {
                     System.out.println(e.getCause());
@@ -96,8 +100,9 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         score = snake.size();
         direction = Direction.RIGHT;
         gameIsRunning = true;
+        snakeIsAlive = true;
 
-        //достаем рекордный результат из преференций
+        //достаем и отображаем рекордный результат из преференций
         preferences = getPreferences(MODE_PRIVATE);
         bestScore = preferences.getInt(BEST_SCORE, score);
         tvBest.setText(scoreToString(bestScore));
@@ -116,7 +121,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onResume() {
         super.onResume();
-        if (!gameIsRunning) {
+        if (!gameIsRunning && snakeIsAlive) {
             gameIsRunning = true;
             snakeMoving = new SnakeMoving();
             snakeMoving.start();
@@ -161,7 +166,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     private List<Rect> generateSnakeArray() {
         List<Rect> snake = new LinkedList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < initialSnakeSize; i++) {
             snake.add(new Rect(startX - (rectSize * i), startY, (startX + rectSize) - (rectSize * i), (startY + rectSize)));
         }
         return snake;
@@ -182,7 +187,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     //todo пофиксить баг с быстрым нажатием "вниз и в бок"
     //или это не баг? В классической змейке на тетрисе так и сделано
-    private void moveSnakeInDirection() {
+    private void moveAndValidateSnake() {
         Rect head = snake.get(0);
         switch (direction) {
             case RIGHT:
@@ -202,6 +207,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         eatFoodOrDeleteTailElement(head);
         borderClashValidation(head);
         snakeBodyClashValidation(head);
+        winGameValidation();
         gameScreenView.setSnake(snake);
         runOnUiThread(new Runnable() {
             @Override
@@ -269,7 +275,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                 head.right > gameScreenSize ||
                 head.bottom > gameScreenSize
         ) {
-            endGame();
+            endGame(LOSE_TITLE);
         }
     }
 
@@ -277,13 +283,21 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         for (int i = 1; i < snake.size(); i++) {
             Rect currentElem = snake.get(i);
             if (head.left == currentElem.left && head.top == currentElem.top) {
-                endGame();
+                endGame(LOSE_TITLE);
             }
         }
     }
 
-    private void endGame() {
+    private void winGameValidation() {
+        //multiple-2 это линейный размер вьюхи экрана игры
+        if (snake.size()>=((multiple-2)*(multiple-2))) {
+            endGame(WIN_TITLE);
+        }
+    }
+
+    private void endGame(final String title) {
         gameIsRunning = false;
+        snakeIsAlive = false;
         if (score>bestScore) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(BEST_SCORE, score);
@@ -292,9 +306,24 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast toast = Toast.makeText(GameScreenActivity.this, "you are dead!", Toast.LENGTH_SHORT);
-                toast.show();
+                showAlert(title, "Окей");
             }
         });
+    }
+
+    private void showAlert(String alertTitle, String alertButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameScreenActivity.this);
+        builder.setTitle(alertTitle)
+                //.setMessage(alertMessage)
+                //.setIcon(alertIcon)
+                .setCancelable(false)
+                .setNegativeButton(alertButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                onBackPressed();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
