@@ -207,7 +207,6 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         eatFoodOrDeleteTailElement(head);
         borderClashValidation(head);
         snakeBodyClashValidation(head);
-        winGameValidation();
         gameScreenView.setSnake(snake);
         runOnUiThread(new Runnable() {
             @Override
@@ -245,8 +244,13 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         for (int i = 0; i < snake.size(); i++) {
             Rect snakeElem = snake.get(i);
             if (food.left == snakeElem.left && food.top == snakeElem.top) {
-                food = generateNewFood();
-                Log.d("generateNewFood", "RECURSION!!!");
+                if (snake.size()<((multiple-2)*(multiple-2))) {
+                    Log.d("generateNewFood", "RECURSION!!!");
+                    food = generateNewFood();
+                } else {
+                    //победа
+                    endGame(WIN_TITLE);
+                }
                 break;
             }
             Log.d("generateNewFood", "no recursion");
@@ -262,6 +266,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private void eatFoodOrDeleteTailElement(Rect head) {
         if (head.left == food.left && head.top == food.top) {
             score = snake.size();
+            //в генерацию еды зашита победа -__-
             food = generateNewFood();
             gameScreenView.setFood(food);
         } else {
@@ -285,13 +290,6 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
             if (head.left == currentElem.left && head.top == currentElem.top) {
                 endGame(LOSE_TITLE);
             }
-        }
-    }
-
-    private void winGameValidation() {
-        //multiple-2 это линейный размер вьюхи экрана игры
-        if (snake.size()>=((multiple-2)*(multiple-2))) {
-            endGame(WIN_TITLE);
         }
     }
 
