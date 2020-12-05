@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -40,12 +42,15 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private GameScreenView gameScreenView;
     private LinearLayout gameBackgroundLayout;
     private TextView tvScore, tvBest;
-    private Button btnRightMove, btnLeftMove, btnUpMove, btnDownMove;
+    private Button btnBack;
+    private ImageButton btnRightMove, btnLeftMove, btnUpMove, btnDownMove;
+    private ToggleButton btnStartStop;
     private Direction direction;
 
     private boolean gameIsRunning;
     private boolean snakeIsAlive;
     private boolean alertIsShowed;
+    private boolean startStopBtnPressed;
 
     private int rectSize;
     private int startX, startY;
@@ -88,6 +93,8 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         btnLeftMove = findViewById(R.id.btn_left);
         btnUpMove = findViewById(R.id.btn_up);
         btnDownMove = findViewById(R.id.btn_down);
+        btnBack = findViewById(R.id.btn_back);
+        btnStartStop = findViewById(R.id.btn_start_stop);
         tvScore = findViewById(R.id.tv_score);
         tvBest = findViewById(R.id.tv_best);
 
@@ -95,6 +102,8 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         btnLeftMove.setOnClickListener(this);
         btnUpMove.setOnClickListener(this);
         btnDownMove.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnStartStop.setOnClickListener(this);
 
         findDisplaySize();
         initGameScreenParams();
@@ -153,11 +162,22 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
                     direction = Direction.DOWN;
                 }
                 break;
+            case (R.id.btn_back):
+                onBackPressed();
+                break;
+            case (R.id.btn_start_stop):
+                if (btnStartStop.isChecked()) {
+                    stopGame();
+                } else {
+                    resumeGame();
+                }
+                break;
         }
     }
 
     private void stopGame() {
         gameIsRunning = false;
+        btnStartStop.setChecked(true);
     }
 
     private void resumeGame() {
@@ -165,6 +185,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
             gameIsRunning = true;
             snakeMoving = new SnakeMoving();
             snakeMoving.start();
+            btnStartStop.setChecked(false);
         }
     }
 

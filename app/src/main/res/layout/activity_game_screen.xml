@@ -55,88 +55,95 @@
 
     <!--    заглушка, что бы прижать к низу кнопки-->
 
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/btn_back"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="bk" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/undo" />
 
-            <Button
-                android:id="@+id/btn_stop"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="st" />
+            <ImageButton
+                android:id="@+id/btn_left"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/left_arrow"
+                android:scaleType="fitCenter" />
+
 
         </LinearLayout>
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_left"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="bottom"
-                android:text="@string/left" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/btn_up"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center_horizontal"
-                android:orientation="vertical">
+                android:src="@drawable/up_arrow"
+                android:scaleType="fitCenter"/>
 
-                <Button
-                    android:id="@+id/btn_up"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/up" />
+            <ImageButton
+                android:id="@+id/btn_down"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/down_arrow"
+                android:scaleType="fitCenter"/>
 
-                <Button
-                    android:id="@+id/btn_down"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/down" />
+        </LinearLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <Button
+            <ToggleButton
+                android:id="@+id/btn_start_stop"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/start_stop_bg"
+                android:checked="false"
+                android:textOff=""
+                android:textOn="" />
+
+            <ImageButton
                 android:id="@+id/btn_right"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="bottom"
-                android:text="@string/right" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/right_arrow"
+                android:scaleType="fitCenter"/>
 
         </LinearLayout>
 
 
     </LinearLayout>
-
-
-
-
 
 
 </LinearLayout>
