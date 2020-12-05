@@ -27,8 +27,10 @@ import java.util.List;
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String BEST_SCORE = "BEST_SCORE";
-    private static final String LOSE_TITLE = "Вы проиграли";
-    private static final String WIN_TITLE = "Вы прошли игру!";
+
+    private final String LOSE_TITLE = getResources().getString(R.string.lose_title);
+    private final String WIN_TITLE = getResources().getString(R.string.win_title);
+    private final String SCORE_TEXT = getString(R.string.your_score);
 
     private static final int initialSnakeSize = 3;
     private static final int multiple = 10;
@@ -304,7 +306,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showAlert(title, "Окей");
+                showAlert(title,"Ok");
             }
         });
     }
@@ -312,8 +314,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private void showAlert(String alertTitle, String alertButtonText) {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameScreenActivity.this);
         builder.setTitle(alertTitle)
-                //.setMessage(alertMessage)
-                //.setIcon(alertIcon)
+                .setMessage(SCORE_TEXT + score)
                 .setCancelable(false)
                 .setNegativeButton(alertButtonText,
                         new DialogInterface.OnClickListener() {

@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SnakeGame</string>
+    <string name="score">score: </string>
+    <string name="best">best: </string>
+    <string name="up">up</string>
+    <string name="down">down</string>
+    <string name="right">right</string>
+    <string name="left">left</string>
+    <string name="play">New game</string>
+    <string name="exit">Exit</string>
+    <string name="info">Info</string>
+    <string name="lose_title">You are bumped</string>
+    <string name="win_title">Congratulations, you\'ve completed the game!</string>
+    <string name="your_score">\"Your score is \"</string>
 </resources>

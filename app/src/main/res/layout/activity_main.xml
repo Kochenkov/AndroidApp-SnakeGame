@@ -27,7 +27,7 @@
             android:id="@+id/btn_play"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Play" />
+            android:text="@string/play" />
 
 <!--        <Button-->
 <!--            android:id="@+id/btn_options"-->
@@ -35,17 +35,17 @@
 <!--            android:layout_height="wrap_content"-->
 <!--            android:text="Options" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/btn_about"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="About" />-->
+        <Button
+            android:id="@+id/btn_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/info" />
 
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exit" />
+            android:text="@string/exit" />
 
 
         <!--    настройки-->

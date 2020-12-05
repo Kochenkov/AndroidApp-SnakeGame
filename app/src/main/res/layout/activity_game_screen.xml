@@ -9,39 +9,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="score: "
-            android:textSize="20sp"/>
+            android:text="@string/score"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0000"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="1dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="best: "
-            android:textSize="20sp"/>
+            android:text="@string/best"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_best"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0000"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -49,31 +49,29 @@
         android:id="@+id/game_background_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
-        android:background="@android:color/background_dark">
-    </LinearLayout>
+        android:background="@android:color/background_dark"
+        android:orientation="vertical"></LinearLayout>
 
-<!--    заглушка, что бы прижать к нижу кнопки-->
+    <!--    заглушка, что бы прижать к низу кнопки-->
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_weight="1"/>
-
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_left"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:text="left" />
+            android:text="@string/left" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -86,14 +84,14 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:text="up" />
+                android:text="@string/up" />
 
             <Button
                 android:id="@+id/btn_down"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:text="down" />
+                android:text="@string/down" />
         </LinearLayout>
 
         <Button
@@ -101,7 +99,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:text="right" />
+            android:text="@string/right" />
 
 
     </LinearLayout>

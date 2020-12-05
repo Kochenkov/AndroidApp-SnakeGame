@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnPlay;
     private Button btnOptions;
-    private Button btnAbout;
+    private Button btnInfo;
     private Button btnExit;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,12 +22,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnPlay = findViewById(R.id.btn_play);
+        btnInfo = findViewById(R.id.btn_about);
         btnExit = findViewById(R.id.btn_exit);
 
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, GameScreenActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(intent);
             }
         });
