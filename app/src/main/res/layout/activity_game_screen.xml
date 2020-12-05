@@ -75,7 +75,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="276dp"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -87,11 +87,19 @@
                 android:text="@string/up" />
 
             <Button
+                android:id="@+id/btn_ке"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/up" />
+
+            <Button
                 android:id="@+id/btn_down"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/down" />
+
         </LinearLayout>
 
         <Button

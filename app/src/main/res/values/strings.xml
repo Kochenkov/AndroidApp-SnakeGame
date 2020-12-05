@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SnakeGame</string>
-    <string name="score">score: </string>
-    <string name="best">best: </string>
+    <string name="score">score:\u0020</string>
+    <string name="best">best:\u0020</string>
     <string name="up">up</string>
     <string name="down">down</string>
     <string name="right">right</string>
@@ -9,7 +9,13 @@
     <string name="play">New game</string>
     <string name="exit">Exit</string>
     <string name="info">Info</string>
-    <string name="lose_title">You are bumped</string>
+    <string name="lose_title">You are bumped!</string>
     <string name="win_title">Congratulations, you\'ve completed the game!</string>
-    <string name="your_score">\"Your score is \"</string>
+    <string name="your_score">Your score is\u0020</string>
+    <string name="alert_ok">OK</string>
+    <string name="game_title">Simple Snake Game</string>
+    <string name="get_out_title">Are you sure you want to get out?</string>
+    <string name="get_out_description">Your progress will be lost</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

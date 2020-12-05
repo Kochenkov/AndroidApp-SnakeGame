@@ -1,6 +1,7 @@
 package com.vkochenkov.snakegame.activities;
 
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -27,14 +28,13 @@ import java.util.List;
 public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String BEST_SCORE = "BEST_SCORE";
-
-    private final String LOSE_TITLE = getResources().getString(R.string.lose_title);
-    private final String WIN_TITLE = getResources().getString(R.string.win_title);
-    private final String SCORE_TEXT = getString(R.string.your_score);
-
     private static final int initialSnakeSize = 3;
     private static final int multiple = 10;
     private static final int timeToRefreshDraw = 500;
+
+    //texts
+    private String LOSE_TITLE;
+    private String WIN_TITLE;
 
     private SharedPreferences preferences;
     private GameScreenView gameScreenView;
@@ -45,6 +45,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     private boolean gameIsRunning;
     private boolean snakeIsAlive;
+    private boolean alertIsShowed;
 
     private int rectSize;
     private int startX, startY;
@@ -77,6 +78,9 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        LOSE_TITLE = getResources().getString(R.string.lose_title);
+        WIN_TITLE = getResources().getString(R.string.win_title);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
 
@@ -103,6 +107,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         direction = Direction.RIGHT;
         gameIsRunning = true;
         snakeIsAlive = true;
+        alertIsShowed = false;
 
         //достаем и отображаем рекордный результат из преференций
         preferences = getPreferences(MODE_PRIVATE);
@@ -117,17 +122,12 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onPause() {
         super.onPause();
-        gameIsRunning = false;
+        stopGame();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (!gameIsRunning && snakeIsAlive) {
-            gameIsRunning = true;
-            snakeMoving = new SnakeMoving();
-            snakeMoving.start();
-        }
+        resumeGame();
     }
 
     @Override
@@ -156,11 +156,23 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void stopGame() {
+        gameIsRunning = false;
+    }
+
+    private void resumeGame() {
+        if (!gameIsRunning && snakeIsAlive && !alertIsShowed) {
+            gameIsRunning = true;
+            snakeMoving = new SnakeMoving();
+            snakeMoving.start();
+        }
+    }
+
     private void createAndInitGameScreenView() {
         gameScreenView = new GameScreenView(this, snake, food, rectSize, multiple);
         LayoutParams params = new LayoutParams(gameScreenSize, gameScreenSize);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.setMargins(rectSize/10, rectSize/10, rectSize/10, rectSize/10);
+        params.setMargins(rectSize / 10, rectSize / 10, rectSize / 10, rectSize / 10);
         gameScreenView.setLayoutParams(params);
         gameBackgroundLayout = findViewById(R.id.game_background_layout);
         gameBackgroundLayout.addView(gameScreenView, 0);
@@ -224,13 +236,13 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         //0000
         final int initialSize = 4;
         int size = 1;
-        while (score/10>0) {
-           score = score/10;
-           size++;
+        while (score / 10 > 0) {
+            score = score / 10;
+            size++;
         }
         String strScore = "";
-        for (int i=0; i<(initialSize-size); i++) {
-            strScore  += "0";
+        for (int i = 0; i < (initialSize - size); i++) {
+            strScore += "0";
         }
         strScore += initialScore;
         return strScore;
@@ -246,7 +258,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         for (int i = 0; i < snake.size(); i++) {
             Rect snakeElem = snake.get(i);
             if (food.left == snakeElem.left && food.top == snakeElem.top) {
-                if (snake.size()<((multiple-2)*(multiple-2))) {
+                if (snake.size() < ((multiple - 2) * (multiple - 2))) {
                     Log.d("generateNewFood", "RECURSION!!!");
                     food = generateNewFood();
                 } else {
@@ -298,7 +310,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     private void endGame(final String title) {
         gameIsRunning = false;
         snakeIsAlive = false;
-        if (score>bestScore) {
+        if (score > bestScore) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(BEST_SCORE, score);
             editor.apply();
@@ -306,23 +318,50 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showAlert(title,"Ok");
+                showEndGameAlert(title, getString(R.string.alert_ok));
             }
         });
     }
 
-    private void showAlert(String alertTitle, String alertButtonText) {
+    private void showEndGameAlert(String alertTitle, String alertButtonText) {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameScreenActivity.this);
         builder.setTitle(alertTitle)
-                .setMessage(SCORE_TEXT + score)
+                .setMessage(getString(R.string.your_score) + score)
                 .setCancelable(false)
                 .setNegativeButton(alertButtonText,
-                        new DialogInterface.OnClickListener() {
+                        new OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                onBackPressed();
+                                finish();
                             }
                         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(GameScreenActivity.this);
+        quitDialog.setTitle(R.string.get_out_title)
+                  .setMessage(R.string.get_out_description)
+                  .setCancelable(false);
+        quitDialog.setPositiveButton(R.string.yes, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertIsShowed = false;
+                finish();
+            }
+        });
+
+        quitDialog.setNegativeButton(R.string.no, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertIsShowed = false;
+                resumeGame();
+            }
+        });
+
+        quitDialog.show();
+        alertIsShowed = true;
+        stopGame();
     }
 }
