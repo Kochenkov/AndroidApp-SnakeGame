@@ -2,18 +2,19 @@ package com.vkochenkov.snakegame.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
+
+import com.vkochenkov.snakegame.R;
 
 import java.util.List;
 
 public class GameScreenView extends View {
 
-    private static final int SNAKE_COLOR = Color.GREEN;
-    private static final int FOOD_COLOR = Color.RED;
-    private static final int BOARD_COLOR = Color.DKGRAY;
+    private final int SNAKE_COLOR = getResources().getColor(R.color.green);
+    private final int FOOD_COLOR = getResources().getColor(R.color.redApple);
+    private final int BOARD_COLOR = getResources().getColor(android.R.color.background_dark);
 
     private List<Rect> snake;
     private Rect food;
