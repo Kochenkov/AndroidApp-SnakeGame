@@ -9,7 +9,7 @@
     <string name="play">New game</string>
     <string name="exit">Exit</string>
     <string name="info">Info</string>
-    <string name="lose_title">You are bumped!</string>
+    <string name="lose_title">You are crashed!</string>
     <string name="win_title">Congratulations, you\'ve completed the game!</string>
     <string name="your_score">Your score is\u0020</string>
     <string name="alert_ok">OK</string>
@@ -17,7 +17,7 @@
     <string name="get_out_description">Your progress will be lost.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="creator">Created by Kochenkov Vladislav</string>
+    <string name="creator">Created by Kochenkov</string>
     <string name="share">share</string>
     <string name="share_link_text">Look at this game: https://play.google.com/store/apps/details?id=com.vkochenkov.snakegame</string>
 
