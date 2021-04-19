@@ -1,71 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_gradient_background"
-    android:orientation="vertical"
-    tools:context=".activities.MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="40dp"
-        android:text="@string/app_name"
-        android:textSize="30sp"/>
+    tools:context=".activities.MainActivity"
+    android:background="@drawable/main_gradient_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
+
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn_play"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/play" />
-
-        <Button
-            android:id="@+id/btn_share"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/share" />
-
-<!--        <Button-->
-<!--            android:id="@+id/btn_options"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Options" />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/btn_about"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/info" />-->
-
-        <Button
-            android:id="@+id/btn_exit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/exit" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/creator"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="40dp"
+            android:text="@string/app_name"
+            android:textSize="30sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_play"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/play" />
+
+            <Button
+                android:id="@+id/btn_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings" />
+
+            <Button
+                android:id="@+id/btn_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/share" />
+
+            <Button
+                android:id="@+id/btn_exit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exit" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>
