@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vkochenkov.Data;
+import com.vkochenkov.App;
 import com.vkochenkov.snakegame.R;
 import com.vkochenkov.snakegame.state.Direction;
 import com.vkochenkov.snakegame.views.GameScreenView;
@@ -30,10 +30,9 @@ import java.util.List;
 
 public class SnakeGameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String BEST_SCORE = "BEST_SCORE";
     private static final int initialSnakeSize = 3;
     private static final int multiple = 10;
-    private int timeToRefreshDraw = Data.INSTANCE.getSpeedValue();
+    private int timeToRefreshDraw = App.Companion.getInstance().getDataStore().getSpeed();
 
     //texts
     private String LOSE_TITLE;
@@ -109,8 +108,7 @@ public class SnakeGameScreenActivity extends AppCompatActivity implements View.O
         alertIsShowed = false;
 
         //достаем и отображаем рекордный результат из преференций
-        preferences = getPreferences(MODE_PRIVATE);
-        bestScore = preferences.getInt(BEST_SCORE, score);
+        bestScore = App.Companion.getInstance().getDataStore().getBestScore(score);
         tvBest.setText(scoreToString(bestScore));
 
         //запускаем движение змеи в отдельном потоке
@@ -342,9 +340,7 @@ public class SnakeGameScreenActivity extends AppCompatActivity implements View.O
         gameIsRunning = false;
         snakeIsAlive = false;
         if (score > bestScore) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt(BEST_SCORE, score);
-            editor.apply();
+            App.Companion.getInstance().getDataStore().setBestScore(score);
         }
         runOnUiThread(new Runnable() {
             @Override
