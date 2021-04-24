@@ -20,19 +20,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.vkochenkov.App;
 import com.vkochenkov.snakegame.R;
-import com.vkochenkov.snakegame.enums.Direction;
+import com.vkochenkov.snakegame.state.Direction;
 import com.vkochenkov.snakegame.views.GameScreenView;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameScreenActivity extends AppCompatActivity implements View.OnClickListener {
+public class SnakeGameScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String BEST_SCORE = "BEST_SCORE";
     private static final int initialSnakeSize = 3;
     private static final int multiple = 10;
-    private static final int timeToRefreshDraw = 500;
+    private int timeToRefreshDraw = App.Companion.getInstance().getDataStore().getSpeed();
 
     //texts
     private String LOSE_TITLE;
@@ -89,24 +89,13 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
 
-        btnRightMove = findViewById(R.id.btn_right);
-        btnLeftMove = findViewById(R.id.btn_left);
-        btnUpMove = findViewById(R.id.btn_up);
-        btnDownMove = findViewById(R.id.btn_down);
-        btnBack = findViewById(R.id.btn_back);
-        btnStartStop = findViewById(R.id.btn_start_stop);
-        tvScore = findViewById(R.id.tv_score);
-        tvBest = findViewById(R.id.tv_best);
+        initFields();
 
-        btnRightMove.setOnClickListener(this);
-        btnLeftMove.setOnClickListener(this);
-        btnUpMove.setOnClickListener(this);
-        btnDownMove.setOnClickListener(this);
-        btnBack.setOnClickListener(this);
-        btnStartStop.setOnClickListener(this);
+        setOnClickListeners();
 
         findDisplaySize();
         initGameScreenParams();
+
         snake = generateSnakeArray();
         food = generateNewFood();
         createAndInitGameScreenView();
@@ -119,13 +108,32 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         alertIsShowed = false;
 
         //достаем и отображаем рекордный результат из преференций
-        preferences = getPreferences(MODE_PRIVATE);
-        bestScore = preferences.getInt(BEST_SCORE, score);
+        bestScore = App.Companion.getInstance().getDataStore().getBestScore(score);
         tvBest.setText(scoreToString(bestScore));
 
         //запускаем движение змеи в отдельном потоке
         snakeMoving = new SnakeMoving();
         snakeMoving.start();
+    }
+
+    private void setOnClickListeners() {
+        btnRightMove.setOnClickListener(this);
+        btnLeftMove.setOnClickListener(this);
+        btnUpMove.setOnClickListener(this);
+        btnDownMove.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnStartStop.setOnClickListener(this);
+    }
+
+    private void initFields() {
+        btnRightMove = findViewById(R.id.btn_right);
+        btnLeftMove = findViewById(R.id.btn_left);
+        btnUpMove = findViewById(R.id.btn_up);
+        btnDownMove = findViewById(R.id.btn_down);
+        btnBack = findViewById(R.id.btn_back);
+        btnStartStop = findViewById(R.id.btn_start_stop);
+        tvScore = findViewById(R.id.tv_score);
+        tvBest = findViewById(R.id.tv_best);
     }
 
     @Override
@@ -221,7 +229,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     //todo пофиксить баг с быстрым нажатием "вниз и в бок"
-    //или это не баг? В классической змейке на тетрисе так и сделано
+    // или это не баг? В классической змейке на тетрисе так и сделано
     private void moveAndValidateSnake() {
         Rect head = snake.get(0);
         switch (direction) {
@@ -332,9 +340,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
         gameIsRunning = false;
         snakeIsAlive = false;
         if (score > bestScore) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt(BEST_SCORE, score);
-            editor.apply();
+            App.Companion.getInstance().getDataStore().setBestScore(score);
         }
         runOnUiThread(new Runnable() {
             @Override
@@ -345,7 +351,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void showEndGameAlert(String alertTitle, String alertButtonText) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameScreenActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SnakeGameScreenActivity.this);
         builder.setTitle(alertTitle)
                 .setMessage(getString(R.string.your_score) + score)
                 .setCancelable(false)
@@ -361,7 +367,7 @@ public class GameScreenActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(GameScreenActivity.this);
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(SnakeGameScreenActivity.this);
         quitDialog.setTitle(R.string.get_out_title)
                   .setMessage(R.string.get_out_description)
                   .setCancelable(false);
